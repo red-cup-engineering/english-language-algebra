@@ -1,0 +1,30 @@
+{
+  "name": "@561-group/panini-english",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "English as a syntaxis fiber-algebra bundle — SVO; the reference bundle, behavior-matching the engine's built-in tables.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emsenn/panini-english.git"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./bundle": "./src/bundle.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@561-group/panini": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
+  "sideEffects": false
+}
