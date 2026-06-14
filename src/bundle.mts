@@ -1,7 +1,7 @@
 // bundle.ts — English as a syntaxis fiber-algebra bundle.
 // SVO word order, left-headed determiners and adjectives.
 // This is the reference bundle: behavior matches the engine's internal tables.
-import type { RawBundle } from "@561-group/language-topology/types";
+import type { RawBundle } from "@emsenn/language-algebra";
 
 export const rawBundle: RawBundle = {
   meta: {

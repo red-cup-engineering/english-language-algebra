@@ -1,12 +1,12 @@
 {
-  "name": "@561-group/english-language-topology",
+  "name": "@emsenn/english-language-algebra",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "english-language-topology: English as a language-topology fiber-algebra bundle; SVO and reference English tables.",
+  "description": "english-language: English as a language fiber — its lexicon, morphology, reference, attachment and segmentation tables, compiled and ready for the settlement engine.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emsenn/english-language-topology.git"
+    "url": "git+https://github.com/emsenn/english-language.git"
   },
   "engines": {
     "node": ">=22.18"
@@ -38,7 +38,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@561-group/language-topology": "workspace:*"
+    "@emsenn/language-algebra": "workspace:*",
+    "@emsenn/language-topology": "workspace:*",
+    "@emsenn/language-codecs": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
