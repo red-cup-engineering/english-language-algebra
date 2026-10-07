@@ -1,5 +1,5 @@
 // ptgae.mts — Plain Technical General American English as an English language fiber.
-export const PTGAE_FIBER_VERSION = "0.1.0" as const;
+export const PTGAE_FIBER_VERSION = "0.2.0" as const;
 export const PTGAE_LOCALE = "en-US" as const;
 
 export const PTGAE_CLAIM_STATUSES = [
@@ -22,6 +22,27 @@ export const PTGAE_REGISTERS = [
 ] as const;
 export type PtgaeRegister = typeof PTGAE_REGISTERS[number];
 
+export type PtgaeTermResolutionState =
+  | "resolved"
+  | "unresolved"
+  | "ambiguous"
+  | "deprecated";
+
+export interface PtgaeTermReading {
+  readonly termId: string;
+  readonly sourceRevision: string;
+  readonly locale?: string;
+}
+
+export interface PtgaeTermResolution {
+  readonly surface: string;
+  readonly state: PtgaeTermResolutionState;
+  readonly canonicalId?: string;
+  readonly sourceRevision?: string;
+  readonly readings?: readonly PtgaeTermReading[];
+  readonly replacementId?: string;
+}
+
 export interface PtgaeAccessibilityProfile {
   readonly headings: "descriptive";
   readonly linkText: "purpose";
@@ -34,6 +55,7 @@ export interface PtgaeTermPolicy {
   readonly deprecated: "provenance-only";
   readonly unresolved: "preserve-surface-and-mark-unresolved";
   readonly contested: "preserve-distinct-readings";
+  readonly rawFrequency: "never-authoritative";
 }
 
 export interface PtgaeFiberRequest {
@@ -69,6 +91,14 @@ export interface PtgaeFiber {
   };
 }
 
+export interface PtgaeProjectionReceipt {
+  readonly fiberId: "ptgae";
+  readonly fiberVersion: typeof PTGAE_FIBER_VERSION;
+  readonly register: PtgaeRegister;
+  readonly claimStatus?: PtgaeClaimStatus;
+  readonly terms: readonly PtgaeTermResolution[];
+}
+
 const accessibility: PtgaeAccessibilityProfile = Object.freeze({
   headings: "descriptive",
   linkText: "purpose",
@@ -81,6 +111,7 @@ const terminology: PtgaeTermPolicy = Object.freeze({
   deprecated: "provenance-only",
   unresolved: "preserve-surface-and-mark-unresolved",
   contested: "preserve-distinct-readings",
+  rawFrequency: "never-authoritative",
 });
 
 export function resolvePtgaeFiber(request: PtgaeFiberRequest = {}): PtgaeFiber {
@@ -110,6 +141,48 @@ export function resolvePtgaeFiber(request: PtgaeFiberRequest = {}): PtgaeFiber {
     ...(request.claimStatus ? { claimStatus: request.claimStatus } : {}),
     ...(request.audience ? { audience: request.audience } : {}),
     ...(request.contentClass ? { contentClass: request.contentClass } : {}),
+  };
+}
+
+export function isAdmissiblePtgaeTermResolution(
+  resolution: PtgaeTermResolution,
+): boolean {
+  if (resolution.surface.trim().length === 0) return false;
+  switch (resolution.state) {
+    case "resolved":
+      return Boolean(resolution.canonicalId && resolution.sourceRevision);
+    case "deprecated":
+      return Boolean(
+        resolution.canonicalId
+        && resolution.sourceRevision
+        && resolution.replacementId,
+      );
+    case "ambiguous":
+      return Boolean(
+        resolution.readings
+        && resolution.readings.length >= 2
+        && resolution.readings.every(
+          (reading) => reading.termId.length > 0 && reading.sourceRevision.length > 0,
+        ),
+      );
+    case "unresolved":
+      return !resolution.canonicalId && !resolution.sourceRevision;
+  }
+}
+
+export function makePtgaeProjectionReceipt(
+  fiber: PtgaeFiber,
+  terms: readonly PtgaeTermResolution[],
+): PtgaeProjectionReceipt {
+  if (!terms.every(isAdmissiblePtgaeTermResolution)) {
+    throw new TypeError("PTGAE term resolution lacks required provenance.");
+  }
+  return {
+    fiberId: fiber.id,
+    fiberVersion: fiber.version,
+    register: fiber.register,
+    ...(fiber.claimStatus ? { claimStatus: fiber.claimStatus } : {}),
+    terms,
   };
 }
 
