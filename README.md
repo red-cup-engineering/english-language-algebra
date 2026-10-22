@@ -22,12 +22,24 @@ Exports:
 - `./tag`: compiled bundle, word tagging, tokenization and full-text readings
 - `solicit-service` and `invoke-service`: ActivityStreams process faces
 
-Established limits remain evidence, not euphemism: unsuffixed adjectives such
-as `difficult` fall to `noun`, and a bare regular verb stem with neither an
-irregular-table entry nor a recognized 3sg/past/nonfin suffix (e.g. `chase`,
-as opposed to its own `chases`) does not anchor subject/object arcs. The
-tests retain both limits so future grammar work must improve the data rather
-than quietly change the claim.
+The English bundle now registers `difficult` as an adjective so the
+shared parser can attach `the difficult exam` to `exam` rather than treating
+`difficult` as the verb's object. Other unsuffixed and ambiguous adjectives
+remain outside the narrow verified lexicon; the analyzer must not claim
+unrestricted English parsing. The earlier example that `chase` lacked verb
+evidence was stale: the current bundle already declares the exact bare stem
+`chase`, and the native parsing suite exercises it.
+
+`./realizing` uses the shared communicating provider for ordinary English
+verb conjugation, while English-specific clause syntax supplies finite
+auxiliaries and pronoun agreement. It distinguishes `I write` from `she
+writes`, `I do not write` from `she does not write`, the finite forms of
+`be`, and future `will [not] ...`. All are bounded clauses, not general
+semantic equivalence or an automatic right to rewrite an author.
+
+Source changes and native regressions on a development branch are not proof
+that a downstream installed package has received them. Validate the declared
+package closure and source revisions before using parser/realizer results.
 
 ```sh
 npm run check
