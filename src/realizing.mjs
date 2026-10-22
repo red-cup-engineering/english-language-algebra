@@ -11,6 +11,9 @@ function plural(subject) {
   const features = bundle.pronounFeatures(subject.toLowerCase());
   if (features?.number === "pl" || features?.number === "both") return true;
   if (features?.number === "sg") return false;
+  // The English bundle's attested personal-name table is singular, even
+  // when the name ends in -s (James). Do not guess a plural from a suffix.
+  if (Object.hasOwn(rawBundle.reference?.nameGender ?? {}, subject.toLowerCase())) return false;
   return /s$/u.test(subject.toLowerCase()) && !/(ss|us|is|ous)$/u.test(subject.toLowerCase());
 }
 
@@ -26,13 +29,39 @@ function nounPhrase(noun) {
  * @param {{subject: string, verb: string, object?: string, negated?: boolean, tense?: "past"|"present"|"future", obliques?: readonly {prep: string, object: string}[]}} spec
  */
 export function realizeClause(spec) {
-  if (typeof spec?.subject !== "string" || typeof spec?.verb !== "string" || spec.subject === "" || spec.verb === "") throw new TypeError("realizeClause requires subject and verb");
+  if (typeof spec?.subject !== "string" || typeof spec?.verb !== "string" ||
+      !spec.subject.trim() || !spec.verb.trim()) throw new TypeError("realizeClause requires subject and verb");
   const tense = spec.tense ?? "present";
-  const tokens = [nounPhrase(spec.subject)];
-  if (spec.negated) {
-    tokens.push(tense === "past" ? "did not" : plural(spec.subject) ? "do not" : "does not", spec.verb.toLowerCase());
+  if (!["present", "past", "future"].includes(tense)) throw new TypeError("unsupported English tense");
+  if (spec.negated !== undefined && typeof spec.negated !== "boolean")
+    throw new TypeError("English negation must be boolean");
+  const subject = spec.subject.trim();
+  const features = bundle.pronounFeatures(subject.toLowerCase());
+  const person = features?.person ?? 3;
+  const isPlural = plural(subject);
+  const thirdSingular = person === 3 && !isPlural;
+  const verb = spec.verb.trim().toLowerCase();
+  const tokens = [nounPhrase(subject)];
+
+  // Future is an auxiliary construction. The generic finite conjugator's
+  // fallback cannot itself carry the time or preserve future negation.
+  if (tense === "future") {
+    tokens.push(spec.negated ? "will not" : "will", verb);
+  } else if (verb === "be") {
+    // Be conjugates for person/number without do-support.
+    const finite = tense === "past"
+      ? (isPlural || person === 2 ? "were" : "was")
+      : (isPlural || person === 2 ? "are" : person === 1 ? "am" : "is");
+    tokens.push(spec.negated ? finite + " not" : finite);
+  } else if (spec.negated) {
+    // Present first/second person and plural subjects take do; only third
+    // person singular takes does. Past finite do-support takes did.
+    const auxiliary = tense === "past" ? "did" : thirdSingular ? "does" : "do";
+    tokens.push(auxiliary + " not", verb);
   } else {
-    tokens.push(conjugate(spec.verb, plural(spec.subject) ? { tense, number: "pl" } : { tense, person: 3, number: "sg" }, bundle));
+    // Morphological conjugation still belongs to the shared language-neutral
+    // provider. This English clause layer selects its actual agreement frame.
+    tokens.push(conjugate(verb, { tense, person, number: isPlural ? "pl" : "sg" }, bundle));
   }
   if (spec.object !== undefined) tokens.push(nounPhrase(spec.object));
   for (const oblique of spec.obliques ?? []) tokens.push(oblique.prep, nounPhrase(oblique.object));
