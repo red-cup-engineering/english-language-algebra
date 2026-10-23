@@ -101,6 +101,9 @@ export const rawBundle = {
     ],
     // Adjectives no suffix rule reaches (predicate "open", "unknown").
     irregularAdjectives: [
+      // Ordinary source-attested adjective with no recognizable derivational
+      // suffix. Without it the engine attached the verb's object to this word.
+      "difficult",
       "open", "closed", "shut", "clear", "unclear",
       "known", "unknown", "resolved", "unresolved", "determined", "undetermined",
     ],

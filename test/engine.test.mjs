@@ -87,30 +87,20 @@ test("roles() extracts agent/patient from a clean past-tense sentence", () => {
   assert.equal(frame?.patient, "exam");
 });
 
-test("GAP (real, reproducible): a bare adjective with no recognized derivational suffix floors to \"noun\" and steals the dobj arc ahead of the true object", () => {
-  // "difficult" matches none of rawBundle.morphology.suffixRules's adjective
-  // patterns (ous|ful|ible|able|ive|ical|ic|ish|less|al|ant|ent|ary|ese|most)
-  // — a real, common gap: many ordinary English adjectives ("big", "red",
-  // "old", "difficult", "good") carry no derivational suffix at all — so
-  // tagging.mjs's open-class floor assigns it ["noun"] instead of ["adj"].
-  // dobj() then scans rightward from the verb for the nearest noun-or-
-  // pronoun and stops at "difficult" (mistagged noun) before ever reaching
-  // the true object "exam". This is real, reproducible behavior of the
-  // shared engine's generic dobj() rule confronted with English's own real
-  // recovered suffixRules data — not a new defect introduced by this port
-  // (contrast with the sentence above, where "famous" DOES carry a
-  // recognized adjective suffix and dobj resolves correctly).
+test("English adjective evidence keeps the object and patient on exam, not difficult", () => {
   const text = "The teacher graded the difficult exam.";
   const base = articulate(text, bundle);
   const sentence = base.spans.find((s) => s.tier === "sentence") ?? base.document;
   const result = parse(sentence, base, bundle);
-  assert.deepEqual(tag("difficult", bundle), ["noun"]);
+  assert.ok(tag("difficult", bundle).includes("adj"), "lexical English adjective evidence is required");
+  const amod = result.arcs.find((a) => a.rel === "amod");
+  assert.equal(amod?.headText, "exam");
+  assert.equal(amod?.depText, "difficult");
   const dobj = result.arcs.find((a) => a.rel === "dobj");
-  assert.equal(dobj?.depText, "difficult"); // wrong: should be "exam"
-  const examWord = result.words.find((w) => w.text === "exam");
-  assert.equal(examWord.connected, "void"); // the true object is left unattached
+  assert.equal(dobj?.headText, "graded");
+  assert.equal(dobj?.depText, "exam");
   const frame = roles(result).find((r) => r.verb === "graded");
-  assert.equal(frame?.patient, "difficult"); // roles() inherits the same wrong resolution
+  assert.equal(frame?.patient, "exam");
 });
 
 test("present-tense verbs now tag \"verb\" via the irregular-verb table, the regular 3sg rule, and a verb-stem lexicon, so nsubj/dobj/roles() fire for present-tense sentences", () => {
