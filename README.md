@@ -52,3 +52,15 @@ projection dependency.
 
 ## Earlier work
 - `lib/legacy/2026-08-03-english-language-algebra`: Earlier english language algebra. Origin: 561-group/bare-cedar-fog `services/lenticule-science/services/linguistics-services-section/services/english-language-algebra`, restored from commit 63b7ba4 on 2026-08-03.
+
+## From the copy in lenticule-science/linguistics-science-services-section
+
+`@561-group/language-parsing-english` is the English language bundle for `@561-group/language-parsing`.
+
+It provides English closed-class tables, morphology, pronoun/reference features, SVO word order, left-side determiners/adjectives, and English segmentation rules. The bundle is data: the parser stays language-neutral and reads this package through the language-parsing `load()` contract.
+
+Use it as the default reference bundle for English parsing, language-editing linting, and language-generation realization.
+
+The package is authored as `.mts` TypeScript and consumed from emitted
+`dist/*.mjs` files with declarations. Use the package root for the compiled
+bundle and `@561-group/language-parsing-english/bundle` for the raw bundle data.
