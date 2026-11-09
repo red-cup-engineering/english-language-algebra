@@ -1,4 +1,4 @@
-// Revived from linguistics-services-section/lib/legacy/2026-07-03-
+// Revived from linguistics-science-services-section/lib/legacy/2026-07-03-
 // communicating-in-english/src/realizing/realize.mts.  This fiber owns
 // English surface realization; communicating remains the shared operation
 // algebra and supplies conjugation.
