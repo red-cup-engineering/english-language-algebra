@@ -5,7 +5,7 @@ import { load, read } from "@red-cup-engineering/communicating";
 import { rawBundle } from "../src/bundle.mjs";
 import { tokenize, tagText } from "../src/tag.mjs";
 import { invoke, solicit } from "../src/english-die.mjs";
-import { ACTIVITYSTREAMS_CONTEXT } from "@red-cup-engineering/activitypub-services-section/activitystreams";
+import { ACTIVITYSTREAMS_CONTEXT } from "@red-cup-engineering/activitypub-engineering-services-section/activitystreams";
 
 const ACTOR = "urn:ame:english-language-algebra";
 
