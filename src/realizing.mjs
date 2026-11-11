@@ -2,7 +2,8 @@
 // communicating-in-english/src/realizing/realize.mts.  This fiber owns
 // English surface realization; communicating remains the shared operation
 // algebra and supplies conjugation.
-import { conjugate, load } from "@red-cup-engineering/communicating";
+import { conjugate } from "@red-cup-engineering/communicating/speaking/listening/algebra/morphology";
+import { load } from "@red-cup-engineering/communicating/speaking/listening/algebra/compile";
 import { rawBundle } from "./bundle.mjs";
 
 const bundle = load(rawBundle);

@@ -10,7 +10,7 @@
 English's language fiber: lexicon, morphology, reference, SVO attachment and
 segmentation data, plus a directly invocable tagging die.
 
-The package owns English data. `@lenticule-science/communicating@0.0.5` owns the
+The package owns English data and clause realization. `@red-cup-engineering/communicating@0.3.1-dev.1` owns the
 language-neutral Mark admission, articulation, charged parse, role and
 cohomology machinery. `./tag` composes those public readings with this bundle;
 it does not import a private section engine. Activity and request IDs preserve
@@ -20,6 +20,7 @@ Exports:
 
 - `.` and `./bundle`: the immutable raw English bundle
 - `./tag`: compiled bundle, word tagging, tokenization and full-text readings
+- `./realizing`: English clause realization and role-frame conversion
 - `solicit-service` and `invoke-service`: ActivityStreams process faces
 
 The English bundle now registers `difficult` as an adjective so the
@@ -36,6 +37,14 @@ auxiliaries and pronoun agreement. It distinguishes `I write` from `she
 writes`, `I do not write` from `she does not write`, the finite forms of
 `be`, and future `will [not] ...`. All are bounded clauses, not general
 semantic equivalence or an automatic right to rewrite an author.
+
+The realizer imports only the provider's public
+`speaking/listening/algebra/compile` and
+`speaking/listening/algebra/morphology` leaves. Importing this bounded English
+operation does not load the provider's root, relating, messaging, or newswire
+operations. Communicating's historical generation entry point delegates back
+to this owner without a module cycle; the language-neutral root does not import
+the English compatibility surface.
 
 Source changes and native regressions on a development branch are not proof
 that a downstream installed package has received them. Validate the declared
