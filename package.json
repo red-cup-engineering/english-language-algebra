@@ -1,0 +1,52 @@
+{
+  "name": "@lenticule-science/english-language-algebra",
+  "version": "0.1.17-dev.0",
+  "type": "module",
+  "description": "english-language-algebra: English as a language fiber — its lexicon, morphology, reference, attachment and segmentation tables — presented as a live, discoverable, directly contractable micro-enterprise (a die) of linguistics-science-services-section.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/red-cup-engineering/english-language-algebra.git"
+  },
+  "engines": {
+    "node": ">=24.3.0"
+  },
+  "bin": {
+    "solicit-service": "./src/english-die.mjs",
+    "invoke-service": "./src/english-die.mjs"
+  },
+  "main": "./src/bundle.mjs",
+  "exports": {
+    ".": "./src/bundle.mjs",
+    "./bundle": "./src/bundle.mjs",
+    "./realizing": "./src/realizing.mjs",
+    "./tag": "./src/tag.mjs",
+    "./package.json": "./package.json",
+    "./src/bundle.mjs": "./src/bundle.mjs"
+  },
+  "dependencies": {
+    "@red-cup-engineering/communicating": "^0.3.5",
+    "@red-cup-engineering/computer-language-systems-engineering-services-section": "^0.1.10"
+  },
+  "files": [
+    "content",
+    "src"
+  ],
+  "sideEffects": false,
+  "license": "MIT",
+  "private": false,
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/561-group/.github/blob/main/TIPS.md"
+  },
+  "devDependencies": {
+    "@red-cup-engineering/activitypub-engineering-services-section": "^0.11.7"
+  },
+  "receivingTests": [
+    "src/parity.test.mjs",
+    "test/engine.test.mjs",
+    "test/english-die.test.mjs",
+    "test/realizing.test.mjs",
+    "test/verb-lexicon.test.mjs",
+    "test/tag-native-source.test.mjs"
+  ]
+}
